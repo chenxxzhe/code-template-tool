@@ -1,11 +1,11 @@
-import * as vscode from 'vscode';
+import { window } from 'vscode';
 
-const { showErrorMessage, showInformationMessage } = vscode.window;
+const { showErrorMessage, showInformationMessage } = window;
 
 export function showErrMsg(msg: string): void {
-    showErrorMessage(`code-template-tool: ${msg}`);
+  showErrorMessage(`code-template-tool: ${msg}`);
 }
 
 export function showInfoMsg(msg: string): void {
-    showInformationMessage(`code-template-tool: ${msg}`);
+  showInformationMessage(`code-template-tool: ${msg}`);
 }

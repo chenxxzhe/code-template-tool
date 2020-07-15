@@ -1,26 +1,20 @@
 'use strict';
-import * as vscode from 'vscode';
-import { handleError } from './utils/error';
-import templateTable from './state/templateTable';
-import newFileFromTemplate from './controller/newFileFromTemplate';
-import openTemplatesFolder from './controller/openTemplatesFolder';
-import reloadTemplates from './controller/reloadTemplates';
+import { ExtensionContext, commands } from 'vscode';
+import commandTable from './commands';
+import Worker from './worker/Worker';
 
-export async function activate(context: vscode.ExtensionContext) {
-    try {
-        await templateTable.init();
+export async function activate(context: ExtensionContext): Promise<void> {
+  const worker = Worker.getInstance();
+  await worker.init(context);
 
-        const { subscriptions } = context;
-        const { registerCommand } = vscode.commands;
+  const { subscriptions } = context;
+  const { registerCommand } = commands;
 
-        subscriptions.push(registerCommand('extension.newFile', newFileFromTemplate));
-        subscriptions.push(registerCommand('extension.editTemplates', openTemplatesFolder));
-        subscriptions.push(
-            registerCommand('extension.reloadTemplates', reloadTemplates)
-        );
-    } catch (err) {
-        handleError(err);
-    }
+  Object.keys(commandTable).forEach(key => {
+    subscriptions.push(registerCommand(key, commandTable[key]));
+  });
 }
 
-export function deactivate() {}
+export function deactivate(): void {
+  // empty
+}
